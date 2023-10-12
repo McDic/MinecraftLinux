@@ -1,0 +1,10 @@
+# IDE files
+.vscode/
+.idea/
+
+# Minecraft files
+*/*
+
+# Server archives
+!server_archives/*
+server_archives/*.jar

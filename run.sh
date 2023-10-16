@@ -21,8 +21,8 @@ SERVER_NAME=$1
 shift 2
 
 VERSION="1.20"
-Xmx="1536M"
-Xms="1024M"
+Xmx="3G"
+Xms="1G"
 
 while true; do
     case "$0" in

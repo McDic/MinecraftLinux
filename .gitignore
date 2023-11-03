@@ -12,3 +12,6 @@ server_archives/*.jar
 # Environment files
 .direnv/
 .envrc
+*.token
+*.key
+*.pem

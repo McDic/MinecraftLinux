@@ -8,3 +8,7 @@
 # Server archives
 !server_archives/*
 server_archives/*.jar
+
+# Environment files
+.direnv/
+.envrc

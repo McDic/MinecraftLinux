@@ -6,7 +6,7 @@ This repository is a template repository to setup and maintain your own Minecraf
 
 - Linux (I tested with [Amazon Linux 2023](https://aws.amazon.com/linux/amazon-linux-2023/))
     - Bash
-- Java Runtime Environment (I tested with [Amazon Corretto 21](https://aws.amazon.com/corretto/) headless version)
+- Java Runtime Environment (I tested with [Amazon Corretto 21](https://docs.aws.amazon.com/corretto/latest/corretto-21-ug/what-is-corretto-21.html) headless version)
 
 ## How-to
 
@@ -20,9 +20,11 @@ wget (JAVA_FILE_DIRECT_DOWNLOAD_LINK)
 mkdir (YOUR_FOLDER)
 mv (JAR_FILE) my_server/minecraft_server.(YOUR_VERSION).jar
 
-# 3. Run your server
+# 3. Run your server (Use nohup to run server in background)
 ./run.sh (YOUR_FOLDER) (YOUR_VERSION)
 ```
+
+You can read [here](https://en.wikipedia.org/wiki/Nohup) to how to use `nohup`.
 
 ## Notes
 

@@ -22,6 +22,7 @@ mv (JAR_FILE) my_server/minecraft_server.(YOUR_SERVER_VERSION).jar
 
 # 3. Run your server
 # Add `--nohup` to run server in background.
+# Use `-h` to see all available argument options.
 ./run.sh --dir (YOUR_SERVER_FOLDER) --version (YOUR_SERVER_VERSION)
 ```
 

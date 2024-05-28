@@ -4,47 +4,79 @@
 SCRIPT_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 cd $SCRIPT_DIR
 
-OPTS=$(getopt --longoptions Xmx,Xms --name "$0" -- "$@" &> /dev/null)
-
 function die() {
     echo "$1"
     exit 1
 }
 
+USAGE_MESSAGE=$(cat <<-EndOfMessage
+Usage: $0 --dir SERVER_DIRECTORY --version VERSION [OPTIONAL_ARGS]
+    -h | --help                     Print this message and exit.
+    -d | --dir SERVER_DIRECTORY     Target given directory as server directory.
+    -v | --version VERSION          Use given JE version to find server jar file,
+                                    '1.20' for example.
+    --Xmx MAX_MEMORY                Same as 'java --Xmx' option. 3G for default.
+    --Xms MIN_MEMORY                Same as 'java --Xms' option. 1G for default.
+    --nohup                         Run server on background with 'nohup'.
+EndOfMessage
+)
+
+function usage() {
+    die "$USAGE_MESSAGE"
+}
+
 if [[ $# -lt 1 ]]; then
-    die "Usage: $0 SERVER_NAME [--version VERSION] [--Xmx MAX_MEMORY] [--Xms MIN_MEMORY]"
+    usage
 elif ! command -v java &> /dev/null; then
     die "Java not found"
 fi
 
-SERVER_NAME=$1
-shift 2
+# https://davetang.org/muse/2023/01/31/bash-script-that-accepts-short-long-and-positional-arguments/
+OPTS=$(getopt -o h,v:,d:, --long help,dir:,Xmx:,Xms:,version:,nohup -- "$@")
 
-VERSION="1.20"
 Xmx="3G"
 Xms="1G"
+USE_NOHUP=false
 
-while true; do
-    case "$0" in
+eval set -- "$OPTS"
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h | --help)
+            usage
+            shift 1
+            ;;
+        -d | --dir)
+            SERVER_NAME=$2
+            shift 2
+            ;;
         --Xmx)
-            Xmx=$1
+            Xmx=$2
             shift 2
             ;;
         --Xms)
-            Xms=$1
+            Xms=$2
             shift 2
             ;;
-        --version)
-            VERSION=$1
+        -v | --version)
+            VERSION=$2
             shift 2
+            ;;
+        --nohup)
+            USE_NOHUP=true
+            shift 1
             ;;
         *)
             break
     esac
 done
 
-if [[ $SERVER_NAME == "server_archives" ]]; then
-    die "\"server_archives\" as server_name is not allowed."
+if [ -z ${SERVER_NAME+x} ]; then
+    die "Server directory is not given. Use -d or --dir."
+elif [ -z ${VERSION+x} ]; then
+    die "JE version is not given. Use -v or --version."
+elif [[ $SERVER_NAME == "server_archives" ]]; then
+    die "\"server_archives\" as server directory is not allowed."
 elif [[ ! -d "$SCRIPT_DIR/$SERVER_NAME" ]]; then
     die "Server directory $SCRIPT_DIR/$SERVER_NAME does not exist."
 fi
@@ -61,4 +93,11 @@ if [[ ! -f "$SCRIPT_DIR/$SERVER_NAME/eula.txt" ]]; then
 fi
 
 cd $SERVER_NAME
-java -Xmx$Xmx -Xms$Xms -jar $JARFILE --nogui
+COMMAND="java -Xmx$Xmx -Xms$Xms -jar $JARFILE --nogui"
+
+if [ "$USE_NOHUP" = "true" ]; then
+    echo "Run \"pkill java\" to terminate the server."
+    nohup $COMMAND >/dev/null 2>&1 &
+else
+    $COMMAND
+fi

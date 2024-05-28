@@ -61,4 +61,4 @@ if [[ ! -f "$SCRIPT_DIR/$SERVER_NAME/eula.txt" ]]; then
 fi
 
 cd $SERVER_NAME
-java -Xmx$Xmx -Xms$Xms -jar $JARFILE nogui
+java -Xmx$Xmx -Xms$Xms -jar $JARFILE --nogui

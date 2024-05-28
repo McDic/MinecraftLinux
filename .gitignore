@@ -1,6 +1,7 @@
 # IDE files
 .vscode/
 .idea/
+*.code-workspace
 
 # Minecraft files
 */*
